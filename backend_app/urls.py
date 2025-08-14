@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 
-# Root endpoint for health check / portfolio showcase
+# Root endpoint so "/" doesn't 404
 def home(request):
     return JsonResponse({
         "status": "success",
-        "message": "Blog API is running successfully 🚀",
+        "message": "Blog API is running 🚀",
+        "docs": "List of API endpoints",
         "endpoints": {
             "Posts list": "/api/posts/",
             "Post detail": "/api/posts/<id>/",
@@ -17,7 +18,8 @@ def home(request):
     })
 
 urlpatterns = [
-    path("", home, name="home"),              # Fixes the 502 at root
+    path("", home, name="home"),       # 👈 This fixes the 404 at root
     path("admin/", admin.site.urls),
-    path("api/posts/", include("posts.urls")) # Include your posts app routes
+    path("api/", include("posts.urls")),
+    path("api/token/", include("token_auth.urls")),  # if you have JWT token auth
 ]
